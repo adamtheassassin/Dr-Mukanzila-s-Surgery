@@ -344,58 +344,9 @@ function ServiceCard({ service, index }: { service: (typeof SERVICES)[number]; i
   );
 }
 
-// Mobile, preferred: the same scroll-driven horizontal effect as desktop, but
-// via CSS scroll-driven animations (animation-timeline) instead of JS, so it
-// runs on the compositor thread with zero scroll lag. Only shown when the
-// browser supports it (see .services-cssjack in globals.css) — otherwise the
-// MobileServices swipe carousel below is shown instead. The keyframe travels
-// translateX(calc(-100% + 100vw)), so only the section height (which sets the
-// 1:1 scroll speed) needs measuring, once, off the scroll path.
-function MobileServicesScrollJack() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [range, setRange] = useState(0);
-
-  useEffect(() => {
-    const measure = () => {
-      if (trackRef.current) {
-        setRange(Math.max(0, trackRef.current.offsetWidth - window.innerWidth));
-      }
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
-
-  return (
-    <section
-      className="services-cssjack relative bg-cream-50 pt-24"
-      style={{ height: range ? `calc(100dvh + ${range}px)` : "500vh" }}
-    >
-      {/* Title sits above the sticky viewport so it scrolls away */}
-      <div className="mx-auto mb-6 max-w-3xl px-4 text-center">
-        <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink-700 shadow-sm ring-1 ring-cream-200">
-          <Cross className="h-3.5 w-3.5 text-brand-600" strokeWidth={2} />
-          Our Services
-        </span>
-        <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-brand-950">
-          Complete Medical Care for <span className="text-brand-600">the Whole Family</span>
-        </h2>
-        <p className="mt-3 text-sm text-ink-500">Keep scrolling to browse everything we treat.</p>
-      </div>
-      <div className="sticky top-[68px] flex h-[calc(100dvh-68px)] flex-col justify-center overflow-hidden pb-10">
-        <div ref={trackRef} className="services-track flex w-max gap-4 px-4 will-change-transform">
-          {SERVICES.map((service, i) => (
-            <ServiceCard key={service.name} service={service} index={i} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// Mobile, fallback: a native horizontal snap carousel. The browser composites
-// native scrolling off the main thread, unlike a JS scroll-linked transform,
-// so it stays smooth on real phones.
+// Mobile: a native horizontal snap carousel. The browser composites native
+// scrolling off the main thread, unlike a JS scroll-linked transform, so it
+// stays smooth on real phones.
 function MobileServices() {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -417,7 +368,7 @@ function MobileServices() {
   };
 
   return (
-    <section className="services-fallback bg-cream-50 py-16 sm:hidden">
+    <section className="bg-cream-50 py-16 sm:hidden">
       <div className="mx-auto mb-8 max-w-3xl px-4 text-center">
         <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink-700 shadow-sm ring-1 ring-cream-200">
           <Cross className="h-3.5 w-3.5 text-brand-600" strokeWidth={2} />
@@ -517,7 +468,6 @@ function DesktopServices() {
 function ServicesShowcase() {
   return (
     <div id="services" className="scroll-mt-24">
-      <MobileServicesScrollJack />
       <MobileServices />
       <DesktopServices />
     </div>
