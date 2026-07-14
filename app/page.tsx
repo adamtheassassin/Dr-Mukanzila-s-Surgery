@@ -310,14 +310,27 @@ function ServicesShowcase() {
     <section
       id="services"
       ref={sectionRef}
-      className="relative bg-cream-50"
+      className="relative bg-cream-50 pt-24 sm:pt-0"
       style={{ height: range ? `calc(100vh + ${range}px)` : "300vh" }}
     >
+      {/* Title block shown above sticky container on mobile, so it scrolls away */}
+      <div className="mx-auto mb-6 max-w-3xl px-4 text-center sm:hidden">
+        <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink-700 shadow-sm ring-1 ring-cream-200">
+          <Cross className="h-3.5 w-3.5 text-brand-600" strokeWidth={2} />
+          Our Services
+        </span>
+        <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-brand-950">
+          Complete Medical Care <br className="hidden sm:block" />
+          for <span className="text-brand-600">the Whole Family</span>
+        </h2>
+      </div>
+
       <div
         ref={viewportRef}
-        className="sticky top-0 flex h-screen flex-col justify-start overflow-hidden pt-24 sm:justify-center sm:pt-0"
+        className="sticky top-[68px] flex h-[calc(100dvh-68px)] flex-col justify-start overflow-hidden sm:top-0 sm:h-screen sm:justify-center sm:pt-0"
       >
-        <div className="mx-auto mb-6 max-w-3xl px-4 text-center sm:mb-12">
+        {/* Title block inside sticky container on desktop */}
+        <div className="mx-auto mb-6 hidden max-w-3xl px-4 text-center sm:mb-12 sm:block">
           <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink-700 shadow-sm ring-1 ring-cream-200">
             <Cross className="h-3.5 w-3.5 text-brand-600" strokeWidth={2} />
             Our Services
@@ -334,7 +347,7 @@ function ServicesShowcase() {
         <motion.div
           ref={trackRef}
           style={{ x }}
-          className="flex gap-5 px-4 sm:gap-8 sm:px-8 lg:pl-[max(2rem,calc((100vw-72rem)/2))] lg:pr-[max(2rem,calc((100vw-72rem)/2))]"
+          className="flex gap-5 px-4 will-change-transform sm:gap-8 sm:px-8 lg:pl-[max(2rem,calc((100vw-72rem)/2))] lg:pr-[max(2rem,calc((100vw-72rem)/2))]"
         >
           {SERVICES.map((service, i) => (
             <div
@@ -377,7 +390,7 @@ function ServicesShowcase() {
                   {service.features.map((f) => (
                     <span
                       key={f}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-brand-900 shadow-sm backdrop-blur"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-brand-900 shadow-sm sm:bg-white/90 sm:backdrop-blur"
                     >
                       <CheckCircle2 className="h-3.5 w-3.5 text-brand-950" strokeWidth={2.5} />
                       {f}
@@ -402,9 +415,58 @@ function ServicesShowcase() {
   );
 }
 
+function MobileWhatsAppButton() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const hero = document.getElementById("hero");
+      const services = document.getElementById("services");
+      
+      if (!hero || !services) return;
+      
+      const heroRect = hero.getBoundingClientRect();
+      const servicesRect = services.getBoundingClientRect();
+      
+      // Show when hero section is mostly out of view
+      const isPastHero = heroRect.bottom <= 100;
+      
+      // Hide when on services section
+      const isOnServices = servicesRect.top < window.innerHeight && servicesRect.bottom > 0;
+      
+      setIsVisible(isPastHero && !isOnServices);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.a
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          href={WHATSAPP_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-5 left-5 right-5 z-50 flex h-14 items-center justify-center gap-2.5 rounded-full bg-[#25D366] text-base font-bold text-white shadow-xl shadow-[#25D366]/30 hover:bg-[#20bd5a] md:hidden"
+        >
+          <WhatsAppIcon className="h-6 w-6" />
+          WhatsApp Us
+        </motion.a>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function Home() {
   return (
-    <div className="pb-16 md:pb-0 bg-cream-50 selection:bg-brand-200 selection:text-brand-900">
+    <div className="bg-cream-50 selection:bg-brand-200 selection:text-brand-900">
       {/* Top info bar */}
       <div className="bg-brand-950 px-4 py-2 text-center text-xs text-brand-100 sm:text-sm font-medium tracking-wide">
         Open Monday to Sunday, 8:00 to 18:00 &nbsp;·&nbsp; 78 Cassandra Ave, Bedworth Park, Vereeniging
@@ -446,7 +508,7 @@ export default function Home() {
 
       <main id="top">
         {/* Hero */}
-        <section className="relative overflow-hidden">
+        <section id="hero" className="relative overflow-hidden">
           {/* Practice image background */}
           <div 
             className="absolute inset-0 bg-cover bg-center lg:bg-[size:100%_auto]" 
@@ -901,25 +963,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Sticky mobile call bar */}
-      <div className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] md:hidden">
-        <a
-          href={PHONE_TEL}
-          className="flex items-center justify-center gap-2 bg-brand-950 py-4.5 text-sm font-bold text-white active:bg-brand-900"
-        >
-          <Phone className="h-4 w-4" strokeWidth={2.5} />
-          Call Clinic
-        </a>
-        <a
-          href={WHATSAPP_LINK}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 bg-[#25D366] py-4.5 text-sm font-bold text-white active:bg-[#20bd5a]"
-        >
-          <WhatsAppIcon className="h-4 w-4" />
-          WhatsApp
-        </a>
-      </div>
+      <MobileWhatsAppButton />
     </div>
   );
 }
