@@ -41,3 +41,53 @@ body {
   @apply bg-cream-50 text-brand-950 font-sans antialiased selection:bg-brand-200 selection:text-brand-900;
   overflow-x: clip;
 }
+
+.no-scrollbar {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * Mobile services: scroll-driven horizontal showcase.
+ *
+ * Phones whose browser supports CSS scroll-driven animations (iOS 26+ Safari,
+ * Chrome 115+) get .services-cssjack — the same "scroll down, cards slide
+ * sideways" effect as desktop, but driven by the compositor with zero lag.
+ * Everyone else keeps the .services-fallback swipe carousel. These rules are
+ * unlayered so they win over Tailwind utilities; the media query keeps them
+ * from ever overriding the sm:hidden on desktop.
+ */
+.services-cssjack {
+  display: none;
+  view-timeline: --services block;
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (width < 640px) {
+    .services-cssjack {
+      display: block;
+    }
+
+    .services-fallback {
+      display: none;
+    }
+  }
+}
+
+/* The track is width: max-content, so -100% is its full width and
+   calc(-100% + 100vw) parks the last card flush with the right edge. */
+.services-track {
+  animation: services-slide linear both;
+  animation-timeline: --services;
+  animation-range: contain 0% contain 100%;
+}
+
+@keyframes services-slide {
+  to {
+    transform: translateX(calc(-100% + 100vw));
+  }
+}

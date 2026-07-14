@@ -27,7 +27,19 @@
       "PowerShell($h = \\(Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing\\).Content; Write-Host \"aspect54:\" \\($h.Contains\\(\"lg:aspect-[5/4]\"\\)\\); Write-Host \"aspect65:\" \\($h.Contains\\(\"xl:aspect-[6/5]\"\\)\\); Write-Host \"grid-cols-2:\" \\($h.Contains\\(\"lg:grid-cols-2 lg:gap-14\"\\)\\); $i = $h.IndexOf\\(\"Your General Practitioner\"\\); Write-Host \\($h.Substring\\($i - 60, 300\\) -replace \"<!-- -->\",\"\"\\))",
       "PowerShell($h = \\(Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing\\).Content; Write-Host \"STATUS OK, len $\\($h.Length\\)\"; Write-Host \"subhead-gone:\" \\(-not $h.Contains\\(\"no appointment needed. We accept\"\\)\\); Write-Host \"book-online-gone:\" \\(-not $h.Contains\\(\"Book Online\"\\)\\); Write-Host \"bullets-gone:\" \\(-not $h.Contains\\(\"4.9 / 5.0 Rating\"\\)\\); Write-Host \"mobile-img:\" \\($h.Contains\\(\"lg:hidden\"\\) -and \\($h -split \"practice-outside\"\\).Count - 1\\); Write-Host \"desktop-img-hidden-on-mobile:\" \\($h.Contains\\(\"relative hidden w-full lg:block\"\\)\\))",
       "PowerShell($h = \\(Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing\\).Content; Write-Host \"STATUS OK\"; foreach \\($t in @\\('class=\"text-center lg:text-left\"','justify-start overflow-hidden pt-24 sm:justify-center','max-w-2xl text-center sm:text-left','max-w-2xl mb-12 text-center sm:text-left','text-center font-display text-3xl font-extrabold tracking-tight text-brand-950 sm:text-4xl lg:text-left','mt-10 text-left','p-7 text-left','py-8 sm:px-6 lg:grid-cols-2'\\)\\) { Write-Host \"$\\($h.Contains\\($t\\)\\) <= $t\" })",
-      "PowerShell($h = \\(Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing\\).Content; Write-Host \"STATUS OK\"; Write-Host \"clamp-class:\" \\($h.Contains\\(\"h-[clamp\\(11rem,calc\\(100vh-33rem\\),30rem\\)]\"\\)\\))"
+      "PowerShell($h = \\(Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing\\).Content; Write-Host \"STATUS OK\"; Write-Host \"clamp-class:\" \\($h.Contains\\(\"h-[clamp\\(11rem,calc\\(100vh-33rem\\),30rem\\)]\"\\)\\))",
+      "Bash(npx next *)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Bash(command -v chromium-cli)",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --window-size=390,844 --hide-scrollbars --virtual-time-budget=8000 --screenshot=\"C:\\\\\\\\Users\\\\\\\\adam\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\c--Users-adam-Desktop-ao-Automations-Websites-Cursor-or-Antigravity-Dr-Mukanzila-s-Surgery\\\\\\\\e22f0280-fd05-4f0e-9706-3d9ce274a313\\\\\\\\scratchpad\\\\\\\\services-mobile.png\" \"http://localhost:3111/#services\")",
+      "Read(//c/Users/adam/AppData/Local/Temp/claude/c--Users-adam-Desktop-ao-Automations-Websites-Cursor-or-Antigravity-Dr-Mukanzila-s-Surgery/e22f0280-fd05-4f0e-9706-3d9ce274a313/scratchpad/**)",
+      "Bash(npm init *)",
+      "Bash(npm i *)",
+      "Bash(node shot.js)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3111/images/doctor-placeholder.png)",
+      "Bash(node shot2.js)",
+      "Bash(node shot4.js)"
     ]
   }
 }

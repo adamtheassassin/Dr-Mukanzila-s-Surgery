@@ -282,7 +282,177 @@ const staggerContainer: Variants = {
   }
 };
 
-function ServicesShowcase() {
+function ServiceCard({ service, index }: { service: (typeof SERVICES)[number]; index: number }) {
+  return (
+    <div
+      className={`relative flex w-[86vw] max-w-[1000px] shrink-0 snap-center flex-col rounded-[2rem] p-5 sm:w-[88vw] sm:p-8 lg:grid lg:grid-cols-[1fr_1.15fr] lg:gap-10 lg:p-10 ${service.bg}`}
+    >
+      <div className="flex flex-col">
+        <span className="font-display text-2xl font-bold tracking-tight text-brand-900 sm:text-4xl">
+          [{String(index + 1).padStart(2, "0")}]
+        </span>
+        <div className="mt-4 lg:mt-auto">
+          <h3 className="font-display text-xl font-bold text-brand-950 sm:text-3xl">
+            {service.name}
+          </h3>
+          <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-600 line-clamp-3 sm:mt-3 sm:text-base sm:line-clamp-none">
+            {service.blurb}
+          </p>
+          <a
+            href="#appointment"
+            className="mt-6 hidden items-center gap-3 rounded-full bg-white py-2 pl-6 pr-2 text-sm font-semibold text-brand-950 shadow-sm ring-1 ring-brand-950/5 transition hover:shadow-md lg:inline-flex"
+          >
+            Book a Visit
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-950 text-white">
+              <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
+            </span>
+          </a>
+        </div>
+      </div>
+      <div
+        className={`relative mt-4 h-52 overflow-hidden rounded-2xl bg-gradient-to-br sm:h-64 lg:mt-0 lg:h-[420px] ${service.imageBg}`}
+      >
+        {/* Placeholder until the practice photos arrive */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <service.icon
+            className={`h-16 w-16 sm:h-28 sm:w-28 ${service.iconColor}`}
+            strokeWidth={1.2}
+          />
+        </div>
+        <div className="absolute inset-x-3 bottom-3 flex flex-wrap gap-2 sm:inset-x-4 sm:bottom-4">
+          {service.features.map((f) => (
+            <span
+              key={f}
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-brand-900 shadow-sm sm:bg-white/90 sm:backdrop-blur"
+            >
+              <CheckCircle2 className="h-3.5 w-3.5 text-brand-950" strokeWidth={2.5} />
+              {f}
+            </span>
+          ))}
+        </div>
+      </div>
+      <a
+        href="#appointment"
+        className="mt-4 inline-flex items-center justify-center gap-3 rounded-full bg-white py-2 pl-6 pr-2 text-sm font-semibold text-brand-950 shadow-sm ring-1 ring-brand-950/5 lg:hidden"
+      >
+        Book a Visit
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-950 text-white">
+          <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
+        </span>
+      </a>
+    </div>
+  );
+}
+
+// Mobile, preferred: the same scroll-driven horizontal effect as desktop, but
+// via CSS scroll-driven animations (animation-timeline) instead of JS, so it
+// runs on the compositor thread with zero scroll lag. Only shown when the
+// browser supports it (see .services-cssjack in globals.css) — otherwise the
+// MobileServices swipe carousel below is shown instead. The keyframe travels
+// translateX(calc(-100% + 100vw)), so only the section height (which sets the
+// 1:1 scroll speed) needs measuring, once, off the scroll path.
+function MobileServicesScrollJack() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [range, setRange] = useState(0);
+
+  useEffect(() => {
+    const measure = () => {
+      if (trackRef.current) {
+        setRange(Math.max(0, trackRef.current.offsetWidth - window.innerWidth));
+      }
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  return (
+    <section
+      className="services-cssjack relative bg-cream-50 pt-24"
+      style={{ height: range ? `calc(100dvh + ${range}px)` : "500vh" }}
+    >
+      {/* Title sits above the sticky viewport so it scrolls away */}
+      <div className="mx-auto mb-6 max-w-3xl px-4 text-center">
+        <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink-700 shadow-sm ring-1 ring-cream-200">
+          <Cross className="h-3.5 w-3.5 text-brand-600" strokeWidth={2} />
+          Our Services
+        </span>
+        <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-brand-950">
+          Complete Medical Care for <span className="text-brand-600">the Whole Family</span>
+        </h2>
+        <p className="mt-3 text-sm text-ink-500">Keep scrolling to browse everything we treat.</p>
+      </div>
+      <div className="sticky top-[68px] flex h-[calc(100dvh-68px)] flex-col justify-center overflow-hidden pb-10">
+        <div ref={trackRef} className="services-track flex w-max gap-4 px-4 will-change-transform">
+          {SERVICES.map((service, i) => (
+            <ServiceCard key={service.name} service={service} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Mobile, fallback: a native horizontal snap carousel. The browser composites
+// native scrolling off the main thread, unlike a JS scroll-linked transform,
+// so it stays smooth on real phones.
+function MobileServices() {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const ticking = useRef(false);
+
+  const handleScroll = () => {
+    if (ticking.current) return;
+    ticking.current = true;
+    requestAnimationFrame(() => {
+      const el = scrollerRef.current;
+      if (el && el.firstElementChild) {
+        const step = (el.firstElementChild as HTMLElement).offsetWidth + 16;
+        setActive(
+          Math.min(SERVICES.length - 1, Math.max(0, Math.round(el.scrollLeft / step)))
+        );
+      }
+      ticking.current = false;
+    });
+  };
+
+  return (
+    <section className="services-fallback bg-cream-50 py-16 sm:hidden">
+      <div className="mx-auto mb-8 max-w-3xl px-4 text-center">
+        <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink-700 shadow-sm ring-1 ring-cream-200">
+          <Cross className="h-3.5 w-3.5 text-brand-600" strokeWidth={2} />
+          Our Services
+        </span>
+        <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-brand-950">
+          Complete Medical Care for <span className="text-brand-600">the Whole Family</span>
+        </h2>
+        <p className="mt-3 text-sm text-ink-500">Swipe to browse everything we treat.</p>
+      </div>
+      <div
+        ref={scrollerRef}
+        onScroll={handleScroll}
+        className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-2"
+      >
+        {SERVICES.map((service, i) => (
+          <ServiceCard key={service.name} service={service} index={i} />
+        ))}
+      </div>
+      <div className="mt-6 flex items-center justify-center gap-1.5" aria-hidden="true">
+        {SERVICES.map((service, i) => (
+          <span
+            key={service.name}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === active ? "w-5 bg-brand-600" : "w-1.5 bg-brand-950/15"
+            }`}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// Desktop: vertical scroll drives the track horizontally inside a sticky viewport.
+function DesktopServices() {
   const sectionRef = useRef<HTMLElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -308,38 +478,24 @@ function ServicesShowcase() {
 
   return (
     <section
-      id="services"
       ref={sectionRef}
-      className="relative bg-cream-50 pt-24 sm:pt-0"
+      className="relative hidden bg-cream-50 sm:block"
       style={{ height: range ? `calc(100vh + ${range}px)` : "300vh" }}
     >
-      {/* Title block shown above sticky container on mobile, so it scrolls away */}
-      <div className="mx-auto mb-6 max-w-3xl px-4 text-center sm:hidden">
-        <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink-700 shadow-sm ring-1 ring-cream-200">
-          <Cross className="h-3.5 w-3.5 text-brand-600" strokeWidth={2} />
-          Our Services
-        </span>
-        <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-brand-950">
-          Complete Medical Care <br className="hidden sm:block" />
-          for <span className="text-brand-600">the Whole Family</span>
-        </h2>
-      </div>
-
       <div
         ref={viewportRef}
-        className="sticky top-[68px] flex h-[calc(100dvh-68px)] flex-col justify-start overflow-hidden sm:top-0 sm:h-screen sm:justify-center sm:pt-0"
+        className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden"
       >
-        {/* Title block inside sticky container on desktop */}
-        <div className="mx-auto mb-6 hidden max-w-3xl px-4 text-center sm:mb-12 sm:block">
+        <div className="mx-auto mb-12 max-w-3xl px-4 text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink-700 shadow-sm ring-1 ring-cream-200">
             <Cross className="h-3.5 w-3.5 text-brand-600" strokeWidth={2} />
             Our Services
           </span>
-          <h2 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-brand-950 sm:mt-6 sm:text-5xl">
-            Complete Medical Care <br className="hidden sm:block" />
+          <h2 className="mt-6 font-display text-5xl font-extrabold tracking-tight text-brand-950">
+            Complete Medical Care <br />
             for <span className="text-brand-600">the Whole Family</span>
           </h2>
-          <p className="mt-3 hidden text-lg leading-relaxed text-ink-600 sm:block">
+          <p className="mt-3 text-lg leading-relaxed text-ink-600">
             Keep scrolling to browse everything we treat at the practice, from
             everyday illnesses to specialised procedures.
           </p>
@@ -347,67 +503,10 @@ function ServicesShowcase() {
         <motion.div
           ref={trackRef}
           style={{ x }}
-          className="flex gap-5 px-4 will-change-transform sm:gap-8 sm:px-8 lg:pl-[max(2rem,calc((100vw-72rem)/2))] lg:pr-[max(2rem,calc((100vw-72rem)/2))]"
+          className="flex gap-8 px-8 will-change-transform lg:pl-[max(2rem,calc((100vw-72rem)/2))] lg:pr-[max(2rem,calc((100vw-72rem)/2))]"
         >
           {SERVICES.map((service, i) => (
-            <div
-              key={service.name}
-              className={`relative flex w-[88vw] max-w-[1000px] shrink-0 flex-col rounded-[2rem] p-5 sm:p-8 lg:grid lg:grid-cols-[1fr_1.15fr] lg:gap-10 lg:p-10 ${service.bg}`}
-            >
-              <div className="flex flex-col">
-                <span className="font-display text-2xl font-bold tracking-tight text-brand-900 sm:text-4xl">
-                  [{String(i + 1).padStart(2, "0")}]
-                </span>
-                <div className="mt-4 lg:mt-auto">
-                  <h3 className="font-display text-xl font-bold text-brand-950 sm:text-3xl">
-                    {service.name}
-                  </h3>
-                  <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-600 line-clamp-3 sm:mt-3 sm:text-base sm:line-clamp-none">
-                    {service.blurb}
-                  </p>
-                  <a
-                    href="#appointment"
-                    className="mt-6 hidden items-center gap-3 rounded-full bg-white py-2 pl-6 pr-2 text-sm font-semibold text-brand-950 shadow-sm ring-1 ring-brand-950/5 transition hover:shadow-md lg:inline-flex"
-                  >
-                    Book a Visit
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-950 text-white">
-                      <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
-                    </span>
-                  </a>
-                </div>
-              </div>
-              <div
-                className={`relative mt-4 h-[clamp(11rem,calc(100vh-33rem),30rem)] overflow-hidden rounded-2xl bg-gradient-to-br sm:h-64 lg:mt-0 lg:h-[420px] ${service.imageBg}`}
-              >
-                {/* Placeholder until the practice photos arrive */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <service.icon
-                    className={`h-16 w-16 sm:h-28 sm:w-28 ${service.iconColor}`}
-                    strokeWidth={1.2}
-                  />
-                </div>
-                <div className="absolute inset-x-3 bottom-3 flex flex-wrap gap-2 sm:inset-x-4 sm:bottom-4">
-                  {service.features.map((f) => (
-                    <span
-                      key={f}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-brand-900 shadow-sm sm:bg-white/90 sm:backdrop-blur"
-                    >
-                      <CheckCircle2 className="h-3.5 w-3.5 text-brand-950" strokeWidth={2.5} />
-                      {f}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <a
-                href="#appointment"
-                className="mt-4 inline-flex items-center justify-center gap-3 rounded-full bg-white py-2 pl-6 pr-2 text-sm font-semibold text-brand-950 shadow-sm ring-1 ring-brand-950/5 lg:hidden"
-              >
-                Book a Visit
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-950 text-white">
-                  <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
-                </span>
-              </a>
-            </div>
+            <ServiceCard key={service.name} service={service} index={i} />
           ))}
         </motion.div>
       </div>
@@ -415,32 +514,50 @@ function ServicesShowcase() {
   );
 }
 
+function ServicesShowcase() {
+  return (
+    <div id="services" className="scroll-mt-24">
+      <MobileServicesScrollJack />
+      <MobileServices />
+      <DesktopServices />
+    </div>
+  );
+}
+
 function MobileWhatsAppButton() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const hero = document.getElementById("hero");
-      const services = document.getElementById("services");
-      
-      if (!hero || !services) return;
-      
-      const heroRect = hero.getBoundingClientRect();
-      const servicesRect = services.getBoundingClientRect();
-      
-      // Show when hero section is mostly out of view
-      const isPastHero = heroRect.bottom <= 100;
-      
-      // Hide when on services section
-      const isOnServices = servicesRect.top < window.innerHeight && servicesRect.bottom > 0;
-      
-      setIsVisible(isPastHero && !isOnServices);
-    };
+    const hero = document.getElementById("hero");
+    const services = document.getElementById("services");
+    if (!hero || !services) return;
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    
-    return () => window.removeEventListener("scroll", handleScroll);
+    // IntersectionObservers instead of a scroll handler, so no layout reads
+    // happen on the scroll path (this contributed to jank on phones).
+    let pastHero = false;
+    let onServices = false;
+    const update = () => setIsVisible(pastHero && !onServices);
+
+    // Show once the hero is (almost) fully scrolled out of view
+    const heroObserver = new IntersectionObserver(
+      ([entry]) => {
+        pastHero = !entry.isIntersecting;
+        update();
+      },
+      { rootMargin: "-100px 0px 0px 0px" }
+    );
+    // Hide while any part of the services section is on screen
+    const servicesObserver = new IntersectionObserver(([entry]) => {
+      onServices = entry.isIntersecting;
+      update();
+    });
+
+    heroObserver.observe(hero);
+    servicesObserver.observe(services);
+    return () => {
+      heroObserver.disconnect();
+      servicesObserver.disconnect();
+    };
   }, []);
 
   return (
