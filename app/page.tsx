@@ -20,7 +20,8 @@ import {
   MapPin,
   ChevronRight,
   Cross,
-  User
+  User,
+  Asterisk
 } from "lucide-react";
 
 // Custom Components
@@ -240,8 +241,8 @@ function WhyAccordion() {
               aria-expanded={open}
               className="flex w-full items-center gap-3 py-5 text-left"
             >
-              <span className="text-lg text-brand-950" aria-hidden="true">
-                ✳
+              <span className="text-brand-950 flex-shrink-0" aria-hidden="true">
+                <Asterisk className="h-5 w-5" />
               </span>
               <span className="font-display text-lg font-bold text-brand-950 sm:text-xl">
                 {item.title}
