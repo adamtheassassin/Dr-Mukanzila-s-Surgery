@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-plus-jakarta-sans);
+}
+
+@theme {
+  /* Deep petrol teal — dark sections, buttons, headings */
+  --color-brand-50: #ecf5f4;
+  --color-brand-100: #dcedec;
+  --color-brand-200: #bcdedd;
+  --color-brand-300: #8fc9c7;
+  --color-brand-400: #5cb1ae;
+  --color-brand-500: #3d9a97;
+  --color-brand-600: #2b807e;
+  --color-brand-700: #256867;
+  --color-brand-800: #215353;
+  --color-brand-900: #16403f;
+  --color-brand-950: #07302f;
+
+  /* Warm cream — page backgrounds and soft borders */
+  --color-cream-50: #fbf1e6;
+  --color-cream-100: #f6e7d7;
+  --color-cream-200: #eed7bd;
+  --color-cream-300: #e0c6a1;
+
+  /* Teal-tinted greys — body text */
+  --color-ink-400: #8ba19e;
+  --color-ink-500: #6d8582;
+  --color-ink-600: #55706d;
+  --color-ink-700: #3d5754;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  @apply bg-cream-50 text-brand-950 font-sans antialiased selection:bg-brand-200 selection:text-brand-900;
+  overflow-x: clip;
+}
