@@ -143,7 +143,7 @@ const DRIPS = [
 const FAQS = [
   {
     q: "Do I need an appointment to see the doctor?",
-    a: "No. Walk-ins are welcome seven days a week, 8:00 to 18:00. If you prefer a set time, send us a WhatsApp and we will confirm a slot for you.",
+    a: "No. Walk-ins are welcome Monday to Friday, 8:00 to 18:00, and Saturday, 8:00 to 15:00. If you prefer a set time, send us a WhatsApp and we will confirm a slot for you.",
   },
   {
     q: "Which medical aids do you accept?",
@@ -207,8 +207,8 @@ const WHY_ITEMS = [
     body: "75 people have reviewed us on Google and almost every single one gave us five stars. Patients keep coming back because they feel heard and looked after.",
   },
   {
-    title: "Open 7 Days a Week",
-    body: "We are open Monday to Sunday, 8:00 to 18:00. Walk in any time that suits you, no appointment necessary.",
+    title: "Convenient Weekday & Saturday Hours",
+    body: "We are open Monday to Friday, 8:00 to 18:00, and Saturday, 8:00 to 15:00. Walk in any time that suits you, no appointment necessary.",
   },
   {
     title: "Most Medical Aids Accepted",
@@ -691,7 +691,7 @@ export default function Home() {
     <div className="bg-cream-50 selection:bg-brand-200 selection:text-brand-900">
       {/* Top info bar */}
       <div className="bg-brand-950 px-4 py-2 text-center text-xs text-brand-100 sm:text-sm font-medium tracking-wide">
-        Open Monday to Sunday, 8:00 to 18:00 &nbsp;·&nbsp; 78 Cassandra Ave, Bedworth Park, Vereeniging
+        Open Mon–Fri 8:00–18:00, Sat 8:00–15:00 &nbsp;·&nbsp; 78 Cassandra Ave, Bedworth Park, Vereeniging
       </div>
 
       {/* Header */}
@@ -796,7 +796,7 @@ export default function Home() {
                 </div>
                 <div className="text-sm leading-tight">
                   <p className="font-bold text-brand-950">Expert Care</p>
-                  <p className="text-ink-500 mt-0.5">7 days a week</p>
+                  <p className="text-ink-500 mt-0.5">Open 6 days a week</p>
                 </div>
               </div>
             </motion.div>
@@ -977,7 +977,11 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-bold text-brand-950">Operating Hours</h4>
-                    <p className="mt-1 text-ink-600">Monday to Sunday<br />08:00 – 18:00</p>
+                    <p className="mt-1 text-ink-600">
+                      Monday – Friday: 08:00 – 18:00<br />
+                      Saturday: 08:00 – 15:00<br />
+                      Sunday: Closed
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-4">

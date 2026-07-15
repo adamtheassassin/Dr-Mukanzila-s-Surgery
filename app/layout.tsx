@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   title:
     "BEST Doctor Vereeniging - looking for a doctor near me, GP consultations, pregnancy care, circumcision, medicals or IV drips near me? Dr Mukanzila's Surgery in Bedworth Park is the place to be",
   description:
-    "Trusted family doctor in Bedworth Park, Vereeniging. Walk-ins welcome 7 days a week, most medical aids accepted, special rates for pensioners. Call 016 020 0081.",
+    "Trusted family doctor in Bedworth Park, Vereeniging. Walk-ins welcome Mon-Fri 8am-6pm and Sat 8am-3pm, most medical aids accepted, special rates for pensioners. Call 016 020 0081.",
   openGraph: {
     title: "Dr Mukanzila's Surgery | Family Doctor in Vereeniging",
     description:
-      "Walk-ins welcome 7 days a week. Most medical aids accepted. 78 Cassandra Ave, Bedworth Park, Vereeniging. Call 016 020 0081.",
+      "Walk-ins welcome Mon-Fri 8am-6pm and Sat 8am-3pm. Most medical aids accepted. 78 Cassandra Ave, Bedworth Park, Vereeniging. Call 016 020 0081.",
     locale: "en_ZA",
     type: "website",
   },
@@ -42,20 +42,20 @@ const localBusinessSchema = {
     postalCode: "1947",
     addressCountry: "ZA",
   },
-  openingHoursSpecification: {
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday",
-    ],
-    opens: "08:00",
-    closes: "18:00",
-  },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "08:00",
+      closes: "18:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Saturday"],
+      opens: "08:00",
+      closes: "15:00",
+    },
+  ],
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "4.9",
