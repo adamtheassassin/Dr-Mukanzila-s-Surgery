@@ -21,7 +21,9 @@ import {
   ChevronRight,
   Cross,
   User,
-  Asterisk
+  Asterisk,
+  Droplet,
+  Sparkles
 } from "lucide-react";
 
 // Custom Components
@@ -466,6 +468,158 @@ function DesktopServices() {
   );
 }
 
+// Pricing rendered as a premium "treatment menu": a sticky editorial intro with
+// one dark featured consultation card, and the drips as a numbered price list.
+function PricingMenu() {
+  const consultation = DRIPS[0];
+  const drips = DRIPS.slice(1);
+
+  return (
+    <section
+      id="prices"
+      className="relative scroll-mt-24 overflow-hidden bg-gradient-to-b from-cream-50 via-white to-white py-20 sm:py-28"
+    >
+      {/* Soft ambient washes instead of a solid dark block */}
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div className="absolute -top-32 right-[-12%] h-[30rem] w-[30rem] rounded-full bg-brand-50 blur-3xl" />
+        <div className="absolute bottom-[-15%] left-[-10%] h-[26rem] w-[26rem] rounded-full bg-cream-100/80 blur-3xl" />
+      </div>
+
+      <div className="relative z-10 mx-auto grid max-w-6xl gap-14 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
+        {/* Intro + featured consultation */}
+        <div className="text-center lg:sticky lg:top-28 lg:self-start lg:text-left">
+          <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-semibold text-ink-700 shadow-sm ring-1 ring-cream-200">
+            <Droplet className="h-3.5 w-3.5 text-brand-600" strokeWidth={2} />
+            IV Therapy & Pricing
+          </span>
+          <h2 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-brand-950 sm:text-5xl">
+            Honest Prices, <span className="text-brand-600">Written Down Upfront</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-md leading-relaxed text-ink-600 sm:text-lg lg:mx-0">
+            You know the exact cost before your treatment begins, so there are
+            never surprise bills when you reach the front desk.
+          </p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="relative mt-10 overflow-hidden rounded-[1.75rem] bg-brand-950 p-7 text-left shadow-2xl shadow-brand-950/25 sm:p-9"
+          >
+            {/* Slow-turning glow so the card feels alive without shouting */}
+            <motion.div
+              aria-hidden="true"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+              className="absolute -right-20 -top-24 h-72 w-72 rounded-full opacity-40 blur-2xl"
+              style={{
+                background:
+                  "conic-gradient(from 0deg, #3d9a97, #07302f, #5cb1ae, #eed7bd, #07302f, #3d9a97)",
+              }}
+            />
+            <div className="relative">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-200 ring-1 ring-white/15">
+                <Sparkles className="h-3 w-3" strokeWidth={2} />
+                Everyday Visits
+              </span>
+              <h3 className="mt-5 font-display text-2xl font-bold text-white">
+                {consultation.name}
+              </h3>
+              <p className="mt-2 max-w-sm text-sm leading-relaxed text-brand-100/80">
+                {consultation.blurb}
+              </p>
+              <div className="mt-7 flex items-end justify-between gap-4 border-t border-white/10 pt-6">
+                <p className="font-display text-5xl font-extrabold tracking-tight text-white">
+                  {consultation.price}
+                </p>
+                <p className="pb-1 text-xs font-medium uppercase tracking-[0.14em] text-brand-300">
+                  All-in price
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="mt-8 flex flex-col items-center gap-3 lg:items-start"
+          >
+            <a
+              href={WHATSAPP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 rounded-xl bg-brand-950 px-7 py-4 text-base font-semibold text-white shadow-lg shadow-brand-950/15 transition-all hover:-translate-y-0.5 hover:bg-brand-900 hover:shadow-brand-950/25 active:translate-y-0"
+            >
+              <WhatsAppIcon className="h-5 w-5 text-[#25D366]" />
+              Ask about IV Therapy
+            </a>
+            <p className="text-xs text-ink-500">
+              Not sure which drip suits you? Message us and we will help you choose.
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Drip menu */}
+        <div className="lg:pt-3">
+          <div className="flex items-center gap-4">
+            <span className="font-display text-xs font-bold uppercase tracking-[0.22em] text-brand-600">
+              The Drip Menu
+            </span>
+            <span className="h-px flex-1 bg-brand-950/10" aria-hidden="true" />
+          </div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={staggerContainer}
+          >
+            {drips.map((drip, i) => (
+              <motion.div
+                key={drip.name}
+                variants={fadeInUp}
+                className="group relative flex items-start gap-5 border-b border-brand-950/10 py-7 sm:gap-7 sm:py-8"
+              >
+                {/* Accent underline that draws itself in on hover */}
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-[-1px] left-0 h-px w-0 bg-brand-600 transition-all duration-500 ease-out group-hover:w-full"
+                />
+                <span className="mt-1 font-display text-sm font-bold tracking-wide text-brand-300 transition-colors duration-300 group-hover:text-brand-600">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-display text-xl font-bold text-brand-950 transition-transform duration-300 group-hover:translate-x-1 sm:text-2xl">
+                    {drip.name}
+                  </h3>
+                  <p className="mt-1.5 max-w-md text-sm leading-relaxed text-ink-600">
+                    {drip.blurb}
+                  </p>
+                </div>
+                {drip.price.startsWith("R") ? (
+                  <p className="mt-0.5 shrink-0 font-display text-2xl font-extrabold tracking-tight text-brand-950 transition-colors duration-300 group-hover:text-brand-600 sm:text-3xl">
+                    {drip.price}
+                  </p>
+                ) : (
+                  <span className="mt-1.5 inline-flex max-w-[7.5rem] shrink-0 items-center justify-center rounded-full bg-cream-50 px-3.5 py-1.5 text-center text-xs font-semibold leading-snug text-ink-700 ring-1 ring-cream-200 transition-colors duration-300 group-hover:text-brand-600 sm:max-w-none">
+                    {drip.price}
+                  </span>
+                )}
+              </motion.div>
+            ))}
+          </motion.div>
+          <p className="mt-6 text-xs leading-relaxed text-ink-500">
+            The Iron Drip is quoted after we check your blood results, so you
+            only pay for what your body actually needs.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ServicesShowcase() {
   return (
     <div id="services" className="scroll-mt-24">
@@ -684,68 +838,7 @@ export default function Home() {
         <ServicesShowcase />
 
         {/* IV Drips & Pricing */}
-        <section id="prices" className="scroll-mt-24 py-20 sm:py-28 bg-brand-950 text-white relative overflow-hidden">
-          {/* Abstract background blobs for a modern medical feel */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-            <div className="absolute -top-1/2 -right-1/4 w-[1000px] h-[1000px] rounded-full bg-brand-900/20 blur-3xl"></div>
-            <div className="absolute -bottom-1/2 -left-1/4 w-[800px] h-[800px] rounded-full bg-teal-900/20 blur-3xl"></div>
-          </div>
-          
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 relative z-10">
-            <div className="max-w-2xl text-center sm:text-left">
-              <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Clinical IV Therapy & Pricing
-              </h2>
-              <p className="mt-4 text-lg leading-relaxed text-brand-100">
-                Transparent pricing for high-end wellness treatments. You know the exact cost before your procedure begins.
-              </p>
-            </div>
-            <motion.div 
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={staggerContainer}
-              className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            >
-              {DRIPS.map((drip) => (
-                <motion.div
-                  variants={fadeInUp}
-                  key={drip.name}
-                  className="flex flex-col rounded-3xl bg-brand-900/50 p-8 ring-1 ring-white/10 backdrop-blur-sm transition-all hover:bg-brand-900 hover:ring-brand-500/50"
-                >
-                  <h3 className="font-display text-xl font-bold text-white">
-                    {drip.name}
-                  </h3>
-                  <p className="mt-3 flex-1 leading-relaxed text-ink-400">
-                    {drip.blurb}
-                  </p>
-                  <div className="mt-6 pt-6 border-t border-white/10">
-                    <p className="font-display text-2xl font-semibold text-brand-400 tracking-tight">
-                      {drip.price}
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="mt-12 flex flex-wrap items-center gap-4"
-            >
-              <a
-                href={WHATSAPP_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 rounded-xl bg-white px-7 py-4 text-base font-semibold text-brand-950 transition-all hover:bg-cream-100 active:scale-95"
-              >
-                <WhatsAppIcon className="h-5 w-5 text-[#25D366]" />
-                Ask about IV Therapy
-              </a>
-            </motion.div>
-          </div>
-        </section>
+        <PricingMenu />
 
         {/* Why choose us */}
         <section className="bg-white py-20 sm:py-28">
