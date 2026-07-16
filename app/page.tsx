@@ -286,9 +286,11 @@ const staggerContainer: Variants = {
 };
 
 function ServiceCard({ service, index }: { service: (typeof SERVICES)[number]; index: number }) {
+  const serviceId = service.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   return (
     <div
-      className={`relative flex w-[86vw] max-w-[1000px] shrink-0 snap-center flex-col rounded-[2rem] p-5 sm:w-[88vw] sm:p-8 lg:grid lg:grid-cols-[1fr_1.15fr] lg:gap-10 lg:p-10 ${service.bg}`}
+      id={serviceId}
+      className={`relative flex w-[86vw] max-w-[1000px] shrink-0 snap-center flex-col rounded-[2rem] p-5 sm:w-[88vw] sm:p-8 lg:grid lg:grid-cols-[1fr_1.15fr] lg:gap-10 lg:p-10 scroll-mt-24 ${service.bg}`}
     >
       <div className="flex flex-col">
         <span className="font-display text-2xl font-bold tracking-tight text-brand-900 sm:text-4xl">
@@ -563,7 +565,7 @@ function PricingMenu() {
         </div>
 
         {/* Drip menu */}
-        <div className="lg:pt-3">
+        <div id="iv-drips" className="lg:pt-3 scroll-mt-24">
           <div className="flex items-center gap-4">
             <span className="font-display text-xs font-bold uppercase tracking-[0.22em] text-brand-600">
               The Drip Menu
