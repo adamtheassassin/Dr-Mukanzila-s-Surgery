@@ -225,8 +225,8 @@ const WHY_ITEMS = [
 ];
 
 const TEAM = [
-  { name: "Dr M. E. Mukanzila", role: "General Practitioner" },
-  { name: "Dr Kala", role: "General Practitioner" },
+  { name: "Dr M. E. Mukanzila", role: "General Practitioner", image: "" },
+  { name: "Dr Kala", role: "General Practitioner", image: "/images/Dr kala.jpeg" },
 ];
 
 function WhyAccordion() {
@@ -893,12 +893,21 @@ export default function Home() {
             </div>
             <div className="mx-auto mt-14 grid max-w-3xl gap-6 sm:grid-cols-2">
               {TEAM.map((doc) => (
-                <div key={doc.name} className="relative overflow-hidden rounded-2xl">
-                  {/* Placeholder until the doctors' photos arrive */}
-                  <div className="flex aspect-[3/4] items-center justify-center bg-gradient-to-br from-brand-200 to-brand-300">
-                    <User className="h-24 w-24 text-brand-400" strokeWidth={1.2} />
-                  </div>
-                  <div className="absolute bottom-4 left-4 right-10 rounded-xl bg-white p-4 shadow-lg">
+                <div key={doc.name} className="relative overflow-hidden rounded-2xl aspect-[3/4]">
+                  {doc.image ? (
+                    <Image
+                      src={doc.image}
+                      alt={doc.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    /* Placeholder until the doctors' photos arrive */
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-200 to-brand-300">
+                      <User className="h-24 w-24 text-brand-400" strokeWidth={1.2} />
+                    </div>
+                  )}
+                  <div className="absolute bottom-4 left-4 right-10 rounded-xl bg-white p-4 shadow-lg z-10">
                     <p className="font-display text-lg font-bold text-brand-950">
                       {doc.name}
                     </p>
